@@ -31,6 +31,8 @@ public class TabViewPagerAdapter extends FragmentPagerAdapter {
                     nbaFragment = new NBAFragment();
                 }
                 return nbaFragment;
+
+
             // do rest of cases
 
 
