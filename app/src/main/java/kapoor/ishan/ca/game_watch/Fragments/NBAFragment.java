@@ -36,9 +36,10 @@ public class NBAFragment extends Fragment implements GameView {
         View view  = inflater.inflate(R.layout.nba_fragment, null);
         ButterKnife.bind(this, view);
         adapter = new GameAdapter(getContext(), R.layout.list_item_game, nbaSchedule);
+        listView = (ListView)view.findViewById(R.id.nba_list_view);
         listView.setAdapter(adapter);
 
-        if(presenter == null){
+        if(presenter == null) {
             presenter = new NBAPresenter();
         }
 
