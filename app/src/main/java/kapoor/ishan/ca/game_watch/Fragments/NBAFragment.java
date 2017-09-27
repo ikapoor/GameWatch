@@ -16,7 +16,6 @@ import kapoor.ishan.ca.game_watch.R;
 
 public class NBAFragment extends Fragment implements GameView {
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
