@@ -40,12 +40,6 @@ public class GameAdapter extends ArrayAdapter<Game> {
     @BindView(R.id.location)
     TextView locationTV;
 
-
-
-
-
-
-
     ArrayList<Game> schedule;
     Context con;
 
@@ -68,6 +62,9 @@ public class GameAdapter extends ArrayAdapter<Game> {
         Game currGame = schedule.get(position);
         homeTeam.setImageResource(getNBAImageID(currGame.getHomeTeam().getAbbreviation()));
         awayTeam.setImageResource(getNBAImageID(currGame.getAwayTeam().getAbbreviation()));
+        dateTV.setText(currGame.getDate());
+        timeTV.setText(currGame.getTime());
+        locationTV.setText(currGame.getLocation());
         return gameView;
     }
 

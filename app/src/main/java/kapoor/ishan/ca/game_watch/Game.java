@@ -9,7 +9,7 @@ public class Game {
     private Team awayTeam;
     private String date;
     private String location;
-    private int ID;
+    private String ID;
     private String time;
 
     public Team getHomeTeam() {
@@ -44,11 +44,11 @@ public class Game {
         this.location = location;
     }
 
-    public int getID() {
+    public String getID() {
         return ID;
     }
 
-    public void setID(int ID) {
+    public void setID(String ID) {
         this.ID = ID;
     }
 

@@ -9,7 +9,7 @@ public class Team {
     private String name;
     private String City;
     private String abbreviation;
-    private int id;
+    private String id;
 
     public String getName() {
         return name;
@@ -35,11 +35,11 @@ public class Team {
         this.abbreviation = abbreviation;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setID(String id) {
         this.id = id;
     }
 }
