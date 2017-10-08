@@ -16,7 +16,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kapoor.ishan.ca.game_watch.APIcalls;
-import kapoor.ishan.ca.game_watch.Adapters.GameAdapter;
+import kapoor.ishan.ca.game_watch.Adapters.NBAGameAdapter;
 import kapoor.ishan.ca.game_watch.Game;
 import kapoor.ishan.ca.game_watch.JSONParsing;
 import kapoor.ishan.ca.game_watch.MainActivity;
@@ -30,10 +30,10 @@ public class NBAFragment extends Fragment implements SportFragment{
 
     public static final String TAG = NBAFragment.class.getSimpleName();
     ArrayList<Game> nbaSchedule= new ArrayList<Game>();
-    GameAdapter adapter;
+    NBAGameAdapter adapter;
     String date;
 
-   @BindView(R.id.nba_list_view)
+   @BindView(R.id.list_view)
     ListView listView;
 
     @Nullable
@@ -42,8 +42,8 @@ public class NBAFragment extends Fragment implements SportFragment{
         Log.d(TAG, "onCreateView()");
         View view  = inflater.inflate(R.layout.nba_fragment, null);
         ButterKnife.bind(this, view);
-        adapter = new GameAdapter(getContext(), R.layout.list_item_game, nbaSchedule);
-        listView = (ListView)view.findViewById(R.id.nba_list_view);
+        adapter = new NBAGameAdapter(getContext(), R.layout.list_item_game, nbaSchedule);
+        listView = (ListView)view.findViewById(R.id.list_view);
         listView.setAdapter(adapter);
         date  = ((MainActivity)getActivity()).getCurrFullDate();
         return view;
@@ -101,7 +101,7 @@ public class NBAFragment extends Fragment implements SportFragment{
 
     @Override
     public void setSchedule(List<Game> list) {
-        if (getActivity()!=null) {
+        if (getActivity()!=null&& list!=null) {
             nbaSchedule.clear();
             nbaSchedule.addAll(list);
             adapter.notifyDataSetChanged();

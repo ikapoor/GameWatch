@@ -1,5 +1,6 @@
 package kapoor.ishan.ca.game_watch.Fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,10 +8,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import kapoor.ishan.ca.game_watch.APIcalls;
+import kapoor.ishan.ca.game_watch.Adapters.NBAGameAdapter;
+import kapoor.ishan.ca.game_watch.Adapters.NHLGameAdpater;
 import kapoor.ishan.ca.game_watch.Game;
+import kapoor.ishan.ca.game_watch.JSONParsing;
+import kapoor.ishan.ca.game_watch.MainActivity;
 import kapoor.ishan.ca.game_watch.R;
 
 /**
@@ -19,17 +29,36 @@ import kapoor.ishan.ca.game_watch.R;
 
 public class NHLFragment extends Fragment implements SportFragment{
     public static final String TAG = NHLFragment.class.getSimpleName();
+    ArrayList<Game> NHLSchedule= new ArrayList<Game>();
+    String date;
+    NHLGameAdpater adapter;
+
+    ListView listView;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView()");
         View view = inflater.inflate(R.layout.nba_fragment, null);
+        adapter = new NHLGameAdpater(getContext(), R.layout.list_item_game, NHLSchedule);
+        listView = (ListView)view.findViewById(R.id.list_view);
+        listView.setAdapter(adapter);
+        date  = ((MainActivity)getActivity()).getCurrFullDate();
         return view;
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView()");
+        super.onViewCreated(view, savedInstanceState);
+        onDateChanged();
+    }
+
+    @Override
     public void onDateChanged() {
+        date  = ((MainActivity)getActivity()).getCurrFullDate();
+        new getNHLschedule().execute();
 
     }
 
@@ -64,7 +93,26 @@ public class NHLFragment extends Fragment implements SportFragment{
 
     @Override
     public void setSchedule(List<Game> list) {
+        if (getActivity()!=null&& list!=null) {
+            NHLSchedule.clear();
+            NHLSchedule.addAll(list);
+            adapter.notifyDataSetChanged();
+        }
 
+    }
+
+    public class getNHLschedule extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... strings){
+            return APIcalls.getSchedule(getSeason(date), date, APIcalls.SPORT_NHL);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            ArrayList<Game> tempList = JSONParsing.parseNBASchedule(s);
+            setSchedule(tempList);
+        }
     }
 
 

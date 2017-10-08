@@ -23,7 +23,7 @@ import kapoor.ishan.ca.game_watch.R;
  * Created by ishan on 2017-09-26.
  */
 
-public class GameAdapter extends ArrayAdapter<Game> {
+public class NBAGameAdapter extends ArrayAdapter<Game> {
 
     @BindView(R.id.HomeTeam)
     ImageView homeTeam;
@@ -40,10 +40,10 @@ public class GameAdapter extends ArrayAdapter<Game> {
     @BindView(R.id.location)
     TextView locationTV;
 
-    ArrayList<Game> schedule;
-    Context con;
+    private ArrayList<Game> schedule;
+    private Context con;
 
-    public GameAdapter(@NonNull Context context, int resource, ArrayList<Game> games) {
+    public NBAGameAdapter(@NonNull Context context, int resource, ArrayList<Game> games) {
         super(context, resource);
         con = context;
         schedule = games;
