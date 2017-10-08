@@ -7,6 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
+import kapoor.ishan.ca.game_watch.Game;
 import kapoor.ishan.ca.game_watch.R;
 
 /**
@@ -24,6 +27,16 @@ public class NFLFragment extends Fragment implements SportFragment {
 
     @Override
     public void onDateChanged() {
+
+    }
+
+    @Override
+    public String getSeason(String date) {
+        return null;
+    }
+
+    @Override
+    public void setSchedule(List<Game> list) {
 
     }
 }

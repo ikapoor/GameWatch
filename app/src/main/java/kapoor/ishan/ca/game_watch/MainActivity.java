@@ -48,15 +48,19 @@ public class MainActivity extends AppCompatActivity {
         viewPagerAdapter= new TabViewPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.setupFragments();
         viewPager.setAdapter(viewPagerAdapter);
+        viewPager.setOffscreenPageLimit(3);
         myTablayout.setupWithViewPager(viewPager);
         final Calendar calendar = Calendar.getInstance();
 
-
+        // sets the lccal year month and date variable to todays date
         year = calendar.get(calendar.YEAR);
         month = calendar.get(calendar.MONTH);
         date = calendar.get(calendar.DAY_OF_MONTH);
+
         currFullDate = Utils.parseDate(year, month, date);
         currFullDate = "20161225";
+
+        // floating action button to make calendar Dialog Appear
         fab = (FloatingActionButton)findViewById(R.id.fab);
         fab.bringToFront();
         fab.setOnClickListener(new View.OnClickListener() {
@@ -80,16 +84,10 @@ public class MainActivity extends AppCompatActivity {
                     currFullDate = Utils.parseDate(year, month, date);
                     Log.d(TAG, "date: " + currFullDate);
                     viewPagerAdapter.notifyDateChanged();
-
                 }
             }, year, month, date);
         }
         datePickerDialog.show();
     }
-
-
-
-
-
 
 }
