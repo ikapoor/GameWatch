@@ -13,7 +13,12 @@ import kapoor.ishan.ca.game_watch.R;
  * Created by ishan on 2017-10-07.
  */
 
-public class MLBFragment extends Fragment {
+public class MLBFragment extends Fragment implements SportFragment {
+
+    @Override
+    public void onDateChanged() {
+
+    }
 
     @Nullable
     @Override

@@ -134,10 +134,7 @@ public class GameAdapter extends ArrayAdapter<Game> {
                 return R.drawable.was;
             default:
                 return 0;
-
-
         }
-
     }
 
 

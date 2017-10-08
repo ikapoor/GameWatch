@@ -13,6 +13,7 @@ import kapoor.ishan.ca.game_watch.Fragments.MLBFragment;
 import kapoor.ishan.ca.game_watch.Fragments.NBAFragment;
 import kapoor.ishan.ca.game_watch.Fragments.NFLFragment;
 import kapoor.ishan.ca.game_watch.Fragments.NHLFragment;
+import kapoor.ishan.ca.game_watch.Fragments.SportFragment;
 
 /**
  * Created by ishan on 2017-09-21.
@@ -21,20 +22,11 @@ import kapoor.ishan.ca.game_watch.Fragments.NHLFragment;
 public class TabViewPagerAdapter extends FragmentStatePagerAdapter {
     private static final String TAG = TabViewPagerAdapter.class.getSimpleName();
 
-    private final List<Fragment> fragmentList = new ArrayList<>();
+    private final List<SportFragment> fragmentList = new ArrayList<>();
     private final List<String> fragmentTitleList = new ArrayList<>();
 
 
     // ints to identify the app
-    public static final int TAB_NBA = 0;
-    public static final int TAB_NHL = 1;
-    public static final int TAB_NFL = 2;
-    public static final int TAB_MLB = 3;
-
-    private NBAFragment nbaFragment;
-    private NBAFragment nflFragment;
-    private NBAFragment nhlFragment;
-    private NBAFragment mlbFragment;
 
     public void setupFragments(){
         addFragment(new NBAFragment(), "NBA");
@@ -48,14 +40,14 @@ public class TabViewPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     public void addFragment(Fragment fragment, String title){
-        fragmentList.add(fragment);
+        fragmentList.add((SportFragment) fragment);
         fragmentTitleList.add(title);
     }
 
     @Override
     public Fragment getItem(int position) {
         Log.d(TAG, "getItem()");
-        return fragmentList.get(position);
+        return (Fragment)fragmentList.get(position);
     }
 
     @Override
@@ -67,4 +59,11 @@ public class TabViewPagerAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         return fragmentTitleList.get(position);
     }
+
+    public void notifyDateChanged(){
+        for (SportFragment fragment: fragmentList){
+            fragment.onDateChanged();
+        }
+    }
+
 }

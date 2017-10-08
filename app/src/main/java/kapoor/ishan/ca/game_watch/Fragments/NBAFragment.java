@@ -25,7 +25,7 @@ import kapoor.ishan.ca.game_watch.R;
  * Created by ishan on 2017-09-21.
  */
 
-public class NBAFragment extends Fragment {
+public class NBAFragment extends Fragment implements SportFragment{
 
     ArrayList<Game> nbaSchedule= new ArrayList<Game>();
     GameAdapter adapter;
@@ -53,7 +53,7 @@ public class NBAFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        new getNBAschedule().execute();
+        onDateChanged();
 
     }
 
@@ -101,5 +101,9 @@ public class NBAFragment extends Fragment {
         }
     }
 
-
+    @Override
+    public void onDateChanged() {
+        date  = ((MainActivity)getActivity()).getCurrFullDate();
+        new getNBAschedule().execute();
+    }
 }
