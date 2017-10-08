@@ -22,30 +22,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         myToolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        myTablayout = (TabLayout)findViewById(R.id.tabLayout);
-        myTablayout.addTab(myTablayout.newTab().setText("TAB 1"));
-        myTablayout.addTab(myTablayout.newTab().setText("TAB 2"));
+        myTablayout = (TabLayout)findViewById(R.id.tab_layout);
         viewPager = (ViewPager)findViewById(R.id.viewPager);
         TabViewPagerAdapter adapter = new TabViewPagerAdapter(getSupportFragmentManager());
+        adapter.setupFragments();
         viewPager.setAdapter(adapter);
+
+        myTablayout.setupWithViewPager(viewPager);
         viewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(myTablayout));
 
-        myTablayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
 
 
 

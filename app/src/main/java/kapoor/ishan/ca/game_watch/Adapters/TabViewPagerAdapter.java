@@ -3,16 +3,27 @@ package kapoor.ishan.ca.game_watch.Adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import kapoor.ishan.ca.game_watch.Fragments.MLBFragment;
 import kapoor.ishan.ca.game_watch.Fragments.NBAFragment;
+import kapoor.ishan.ca.game_watch.Fragments.NFLFragment;
+import kapoor.ishan.ca.game_watch.Fragments.NHLFragment;
 
 /**
  * Created by ishan on 2017-09-21.
  */
 
-public class TabViewPagerAdapter extends FragmentPagerAdapter {
+public class TabViewPagerAdapter extends FragmentStatePagerAdapter {
     private static final String TAG = TabViewPagerAdapter.class.getSimpleName();
+
+    private final List<Fragment> fragmentList = new ArrayList<>();
+    private final List<String> fragmentTitleList = new ArrayList<>();
+
 
     // ints to identify the app
     public static final int TAB_NBA = 0;
@@ -25,56 +36,35 @@ public class TabViewPagerAdapter extends FragmentPagerAdapter {
     private NBAFragment nhlFragment;
     private NBAFragment mlbFragment;
 
+    public void setupFragments(){
+        addFragment(new NBAFragment(), "NBA");
+        addFragment(new NHLFragment(), "NHL");
+        addFragment(new NFLFragment(), "NFL");
+        addFragment(new MLBFragment(), "MLB");
+    }
+
     public TabViewPagerAdapter(FragmentManager fm) {
         super(fm);
+    }
+
+    public void addFragment(Fragment fragment, String title){
+        fragmentList.add(fragment);
+        fragmentTitleList.add(title);
     }
 
     @Override
     public Fragment getItem(int position) {
         Log.d(TAG, "getItem()");
-        switch (position) {
-            case TAB_NBA:
-                if (nbaFragment == null) {
-                    nbaFragment = new NBAFragment();
-                }
-                return nbaFragment;
-            case TAB_NHL:
-                if (nhlFragment == null) {
-                    nhlFragment = new NBAFragment();
-                }
-                return nhlFragment;
-            case TAB_NFL:
-                if (nflFragment == null) {
-                    nflFragment = new NBAFragment();
-                }
-                return nflFragment;
-            case TAB_MLB:
-                if (mlbFragment == null) {
-                    mlbFragment = new NBAFragment();
-                }
-                return mlbFragment;
-        }
-        return null;
+        return fragmentList.get(position);
     }
 
     @Override
     public int getCount() {
-        // static tabs, only four tabs should exist at all times
-        return 4;
+        return fragmentList.size();
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        switch (position) {
-            case TAB_MLB:
-                return "MLB";
-            case TAB_NBA:
-                return "NBA";
-            case TAB_NFL:
-                return "NFL";
-            case TAB_NHL:
-                return "NHL";
-        }
-        return null;
+        return fragmentTitleList.get(position);
     }
 }
