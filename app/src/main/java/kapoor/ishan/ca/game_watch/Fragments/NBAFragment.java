@@ -106,6 +106,5 @@ public class NBAFragment extends Fragment implements SportFragment{
             nbaSchedule.addAll(list);
             adapter.notifyDataSetChanged();
         }
-
     }
 }

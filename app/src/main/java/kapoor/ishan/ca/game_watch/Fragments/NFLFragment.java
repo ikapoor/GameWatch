@@ -68,6 +68,7 @@ public class NFLFragment extends Fragment implements SportFragment {
 
     @Override
     public void onDateChanged() {
+        Log.d(TAG, "onDateChanged()");
         date = ((MainActivity)getActivity()).getCurrFullDate();
         new getNFLschedule().execute();
 
@@ -75,6 +76,7 @@ public class NFLFragment extends Fragment implements SportFragment {
 
     @Override
     public String getSeason(String date) {
+        Log.d(TAG, "getSeason: " + date);
         int intDate =  Integer.valueOf(date);
         if (intDate>=20140904 && intDate <= 20141228)
             return "2014-regular";
@@ -96,6 +98,7 @@ public class NFLFragment extends Fragment implements SportFragment {
 
     @Override
     public void setSchedule(List<Game> list) {
+        Log.d(TAG, "setSchedule()");
         if (getActivity()!=null&& list!=null) {
             gameList.clear();
             gameList.addAll(list);
