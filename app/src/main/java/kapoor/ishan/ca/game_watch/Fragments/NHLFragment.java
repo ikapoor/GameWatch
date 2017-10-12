@@ -110,7 +110,7 @@ public class NHLFragment extends Fragment implements SportFragment{
 
         @Override
         protected void onPostExecute(String s) {
-            ArrayList<Game> tempList = JSONParsing.parseNBASchedule(s);
+            ArrayList<Game> tempList = JSONParsing.parseSchedule(s);
             setSchedule(tempList);
         }
     }

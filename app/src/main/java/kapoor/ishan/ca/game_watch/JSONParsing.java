@@ -17,7 +17,7 @@ public class JSONParsing {
 
     public static final String TAG  = JSONParsing.class.getSimpleName();
 
-    public static ArrayList<Game> parseNBASchedule (String s){
+    public static ArrayList<Game> parseSchedule (String s){
         Log.d(TAG, "parseNBASchedule");
         Log.d(TAG, s);
         ArrayList<Game> listOfGames = new ArrayList<Game>();
@@ -58,7 +58,7 @@ public class JSONParsing {
                     currGame.setAwayTeam(awayTeam);
 
                     listOfGames.add(currGame);
-                    Log.d(TAG, "parseNBAsuccess");
+                    Log.d(TAG, "parseGameSuccess");
                 }
                 return listOfGames;
 
@@ -66,7 +66,7 @@ public class JSONParsing {
         } catch (JSONException e) {
             e.printStackTrace();
             System.out.println(e.toString());
-            Log.d(TAG, "parseNBAfail");
+            Log.d(TAG, "parseGameFail");
         }
         return null;
     }
