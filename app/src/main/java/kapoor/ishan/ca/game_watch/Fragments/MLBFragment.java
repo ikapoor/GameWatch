@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,9 @@ public class MLBFragment extends Fragment implements SportFragment {
 
     @BindView(R.id.list_view)
     ListView listView;
+
+    @BindView(R.id.no_game_textView)
+    TextView noGameTextView;
 
     @Nullable
     @Override
@@ -104,10 +108,20 @@ public class MLBFragment extends Fragment implements SportFragment {
 
     @Override
     public void setSchedule(List<Game> list) {
+
         if (getActivity()!=null&& list!=null) {
+            noGameTextView.setVisibility(View.GONE);
+            listView.bringToFront();
+            listView.setVisibility(View.VISIBLE);
             mlbSchedule.clear();
             mlbSchedule.addAll(list);
             adapter.notifyDataSetChanged();
         }
+    }
+
+    public void noGamesOnSelectedDateView(){
+        listView.setVisibility(View.GONE);
+        noGameTextView.bringToFront();
+        noGameTextView.setVisibility(View.VISIBLE);
     }
 }

@@ -13,4 +13,5 @@ public interface SportFragment {
     void onDateChanged();
     String getSeason(String date);
     void setSchedule(List<Game> list);
+    void noGamesOnSelectedDateView();
 }

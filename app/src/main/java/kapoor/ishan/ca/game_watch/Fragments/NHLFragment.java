@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,11 @@ public class NHLFragment extends Fragment implements SportFragment{
     String date;
     NHLGameAdpater adapter;
 
+    @BindView(R.id.list_view)
     ListView listView;
+
+    @BindView(R.id.no_game_textView)
+    TextView noGameTextView;
 
 
     @Nullable
@@ -41,6 +46,7 @@ public class NHLFragment extends Fragment implements SportFragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView()");
         View view = inflater.inflate(R.layout.nba_fragment, null);
+        ButterKnife.bind(this, view);
         adapter = new NHLGameAdpater(getContext(), R.layout.list_item_game, NHLSchedule);
         listView = (ListView)view.findViewById(R.id.list_view);
         listView.setAdapter(adapter);
@@ -94,6 +100,9 @@ public class NHLFragment extends Fragment implements SportFragment{
     @Override
     public void setSchedule(List<Game> list) {
         if (getActivity()!=null&& list!=null) {
+            noGameTextView.setVisibility(View.GONE);
+            listView.bringToFront();
+            listView.setVisibility(View.VISIBLE);
             NHLSchedule.clear();
             NHLSchedule.addAll(list);
             adapter.notifyDataSetChanged();
@@ -116,5 +125,10 @@ public class NHLFragment extends Fragment implements SportFragment{
     }
 
 
+    public void noGamesOnSelectedDateView(){
+        listView.setVisibility(View.GONE);
+        noGameTextView.bringToFront();
+        noGameTextView.setVisibility(View.VISIBLE);
+    }
 
 }
