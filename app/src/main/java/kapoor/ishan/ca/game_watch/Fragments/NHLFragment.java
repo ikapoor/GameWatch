@@ -52,6 +52,8 @@ public class NHLFragment extends Fragment implements SportFragment{
         listView.setAdapter(adapter);
         date  = ((MainActivity)getActivity()).getCurrFullDate();
         return view;
+
+
     }
 
     @Override
@@ -120,10 +122,17 @@ public class NHLFragment extends Fragment implements SportFragment{
         @Override
         protected void onPostExecute(String s) {
             ArrayList<Game> tempList = JSONParsing.parseSchedule(s);
-            setSchedule(tempList);
+            if (tempList == null)
+                noGamesOnSelectedDateView();
+            else
+                setSchedule(tempList);
         }
     }
 
+    @Override
+    public void onGameClicked(String id) {
+
+    }
 
     public void noGamesOnSelectedDateView(){
         listView.setVisibility(View.GONE);

@@ -1,5 +1,6 @@
 package kapoor.ishan.ca.game_watch.Fragments;
 
+import android.app.FragmentManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,11 +13,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kapoor.ishan.ca.game_watch.APIcalls;
+import kapoor.ishan.ca.game_watch.Adapters.GameScoresDialogFragment;
 import kapoor.ishan.ca.game_watch.Adapters.NBAGameAdapter;
 import kapoor.ishan.ca.game_watch.Game;
 import kapoor.ishan.ca.game_watch.JSONParsing;
@@ -30,9 +33,12 @@ import kapoor.ishan.ca.game_watch.R;
 public class NBAFragment extends Fragment implements SportFragment{
 
     public static final String TAG = NBAFragment.class.getSimpleName();
+    private static final String SCORES_ALREADY_GOT = "gotScore";
     ArrayList<Game> nbaSchedule= new ArrayList<Game>();
+    HashMap<String, int[]> gamesScores = new HashMap<>();
     NBAGameAdapter adapter;
     String date;
+    private boolean scoresGot = false;
 
    @BindView(R.id.list_view)
     ListView listView;
@@ -46,7 +52,7 @@ public class NBAFragment extends Fragment implements SportFragment{
         Log.d(TAG, "onCreateView()");
         View view  = inflater.inflate(R.layout.nba_fragment, null);
         ButterKnife.bind(this, view);
-        adapter = new NBAGameAdapter(getContext(), R.layout.list_item_game, nbaSchedule);
+        adapter = new NBAGameAdapter(getContext(), R.layout.list_item_game, nbaSchedule, this);
         listView = (ListView)view.findViewById(R.id.list_view);
         listView.setAdapter(adapter);
         date  = ((MainActivity)getActivity()).getCurrFullDate();
@@ -67,30 +73,6 @@ public class NBAFragment extends Fragment implements SportFragment{
     public void onDestroyView() {
         Log.d(TAG, "onDestroyView()");
         super.onDestroyView();
-    }
-
-
-    public class getNBAschedule extends AsyncTask<String, String, String>{
-
-        @Override
-        protected String doInBackground(String... strings){
-            return APIcalls.getSchedule(getSeason(date), date, APIcalls.SPORT_NBA);
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            ArrayList<Game> tempList = JSONParsing.parseSchedule(s);
-             if (tempList == null)
-                 noGamesOnSelectedDateView();
-            else
-                setSchedule(tempList);
-        }
-    }
-
-    @Override
-    public void onDateChanged() {
-        date  = ((MainActivity)getActivity()).getCurrFullDate();
-        new getNBAschedule().execute();
     }
 
     @Override
@@ -119,10 +101,90 @@ public class NBAFragment extends Fragment implements SportFragment{
         }
     }
 
+    @Override
+    public void onGameClicked(String position, String id) {
+        if(!scoresGot)
+            new getNBAScores().execute(position, id);
+        else {
+            showGameScores(position, id);
+        }
+    }
+
+    private void showGameScores(String position, String id) {
+        int pos = Integer.valueOf(position);
+        int[] currGameScores = gamesScores.get(id);
+        Game currGame = nbaSchedule.get(pos);
+        Bundle bundle = new Bundle();
+        bundle.putString(GameScoresDialogFragment.HOME_TEAM_NAME_KEY, currGame.getHomeTeam().getName());
+        bundle.putString(GameScoresDialogFragment.AWAY_TEAM_NAME_KEY, currGame.getAwayTeam().getName());
+        bundle.getString(GameScoresDialogFragment.HOME_TEAM_CITY_KEY, currGame.getHomeTeam().getCity());
+        bundle.putString(GameScoresDialogFragment.AWAY_TEAM_CITY_KEY, currGame.getAwayTeam().getCity());
+        bundle.putString(GameScoresDialogFragment.HOME_TEAM_ABBREVIATION_KEY, currGame.getHomeTeam().getAbbreviation());
+        bundle.putString(GameScoresDialogFragment.AWAY_TEAM_ABBREVIATION_KEY, currGame.getAwayTeam().getAbbreviation());
+        bundle.putInt(GameScoresDialogFragment.HOME_TEAM_SCORE_KEY, gamesScores.get(id)[0]);
+        bundle.putInt(GameScoresDialogFragment.AWAY_TEAM_SCORE_KEY, gamesScores.get(id)[1]);
+        GameScoresDialogFragment gameScoresDialogFragment = new GameScoresDialogFragment();
+        gameScoresDialogFragment.setArguments(bundle);
+        gameScoresDialogFragment.show(getActivity().getFragmentManager(), "tag");
+    }
+
+    @Override
+    public void onDateChanged() {
+        date  = ((MainActivity)getActivity()).getCurrFullDate();
+        new getNBAschedule().execute();
+    }
+
     public void noGamesOnSelectedDateView(){
         listView.setVisibility(View.GONE);
         noGameTextView.bringToFront();
         noGameTextView.setVisibility(View.VISIBLE);
     }
+
+
+
+
+    public class getNBAschedule extends AsyncTask<String, String, String>{
+
+        @Override
+        protected String doInBackground(String... strings){
+            return APIcalls.getSchedule(getSeason(date), date, APIcalls.SPORT_NBA);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            ArrayList<Game> tempList = JSONParsing.parseSchedule(s);
+            if (tempList == null)
+                noGamesOnSelectedDateView();
+            else
+                setSchedule(tempList);
+        }
+    }
+
+
+    public class getNBAScores extends AsyncTask<String, String, String> {
+
+        public String idClicked;
+        public String positionCLicked;
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String stringFromAPICall = APIcalls.getScore(getSeason(date), date, APIcalls.SPORT_NBA);
+            Log.d(TAG, stringFromAPICall);
+            positionCLicked = strings[0];
+            idClicked = strings[1];
+            scoresGot = true;
+            return stringFromAPICall;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            HashMap<String, int[]> scores = JSONParsing.parseNBAScore(s);
+            if (scores == null) return;
+            gamesScores = JSONParsing.parseNBAScore(s);
+            showGameScores(positionCLicked, idClicked);
+
+        }
+    }
+
 }
 

@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -70,4 +71,30 @@ public class JSONParsing {
         }
         return null;
     }
+
+    public static HashMap<String, int[]> parseNBAScore(String rawJSON){
+        HashMap<String, int[]> hashMap = new HashMap<>();
+        try {
+            JSONObject jsonObject = new JSONObject(rawJSON);
+            JSONObject scoreboard = jsonObject.getJSONObject("scoreboard");
+            if (!scoreboard.has("gameScore")) return null;
+            JSONArray gameScore = scoreboard.getJSONArray("gameScore");
+
+            for (int i = 0; i<gameScore.length(); i++){
+                JSONObject currGame = gameScore.getJSONObject(i);
+                int[] score= new int[2];
+                JSONObject game = currGame.getJSONObject("game");
+                String id = game.getString("ID");
+                score[0] = Integer.parseInt(currGame.getString("homeScore"));
+                score[1] = Integer.parseInt(currGame.getString("awayScore"));
+                hashMap.put(id, score);
+            }
+            return hashMap;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 }

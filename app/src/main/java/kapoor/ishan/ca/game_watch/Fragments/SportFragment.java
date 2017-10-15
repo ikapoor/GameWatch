@@ -14,4 +14,5 @@ public interface SportFragment {
     String getSeason(String date);
     void setSchedule(List<Game> list);
     void noGamesOnSelectedDateView();
+    void onGameClicked(String position, String id);
 }

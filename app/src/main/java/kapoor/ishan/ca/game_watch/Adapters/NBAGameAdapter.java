@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import java.util.LinkedList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import kapoor.ishan.ca.game_watch.Fragments.SportFragment;
 import kapoor.ishan.ca.game_watch.Game;
 import kapoor.ishan.ca.game_watch.R;
 
@@ -24,6 +26,7 @@ import kapoor.ishan.ca.game_watch.R;
  */
 
 public class NBAGameAdapter extends ArrayAdapter<Game> {
+    public static final String TAG = NBAGameAdapter.class.getSimpleName();
 
     @BindView(R.id.HomeTeam)
     ImageView homeTeam;
@@ -42,11 +45,13 @@ public class NBAGameAdapter extends ArrayAdapter<Game> {
 
     private ArrayList<Game> schedule;
     private Context con;
+    SportFragment sportFragment;
 
-    public NBAGameAdapter(@NonNull Context context, int resource, ArrayList<Game> games) {
+    public NBAGameAdapter(@NonNull Context context, int resource, ArrayList<Game> games, SportFragment sportFragment) {
         super(context, resource);
         con = context;
         schedule = games;
+        this.sportFragment = sportFragment;
     }
     @Override
     public int getCount() {
@@ -55,16 +60,27 @@ public class NBAGameAdapter extends ArrayAdapter<Game> {
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View View, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View View, @NonNull ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) con.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View gameView = inflater.inflate(R.layout.list_item_game, parent, false);
         ButterKnife.bind(this, gameView);
-        Game currGame = schedule.get(position);
+        final Game currGame = schedule.get(position);
         homeTeam.setImageResource(getNBAImageID(currGame.getHomeTeam().getAbbreviation()));
         awayTeam.setImageResource(getNBAImageID(currGame.getAwayTeam().getAbbreviation()));
         dateTV.setText(currGame.getDate());
         timeTV.setText(currGame.getTime());
         locationTV.setText(currGame.getLocation());
+
+        gameView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "gameClicked(), " + currGame.getHomeTeam().getName() + " vs. " + currGame.getAwayTeam().getName());
+                sportFragment.onGameClicked(Integer.toString(position), currGame.getID());
+
+            }
+        });
+
+
         return gameView;
     }
 

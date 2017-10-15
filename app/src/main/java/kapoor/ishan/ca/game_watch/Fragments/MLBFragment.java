@@ -3,7 +3,9 @@ package kapoor.ishan.ca.game_watch.Fragments;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +36,7 @@ public class MLBFragment extends Fragment implements SportFragment {
     ArrayList<Game> mlbSchedule = new ArrayList<>();
     MLBGameAdapter adapter;
     String date;
+
 
     @BindView(R.id.list_view)
     ListView listView;
@@ -73,7 +76,10 @@ public class MLBFragment extends Fragment implements SportFragment {
         @Override
         protected void onPostExecute(String s) {
             ArrayList<Game> tempList = JSONParsing.parseSchedule(s);
-            setSchedule(tempList);
+            if (tempList == null)
+                noGamesOnSelectedDateView();
+            else
+                setSchedule(tempList);
         }
     }
 
@@ -118,6 +124,12 @@ public class MLBFragment extends Fragment implements SportFragment {
             adapter.notifyDataSetChanged();
         }
     }
+
+    @Override
+    public void onGameClicked(String id) {
+
+    }
+
 
     public void noGamesOnSelectedDateView(){
         listView.setVisibility(View.GONE);
