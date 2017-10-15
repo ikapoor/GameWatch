@@ -34,11 +34,11 @@ import kapoor.ishan.ca.game_watch.R;
 public class NBAFragment extends Fragment implements SportFragment{
 
     public static final String TAG = NBAFragment.class.getSimpleName();
-    ArrayList<Game> nbaSchedule= new ArrayList<Game>();
-    HashMap<String, int[]> gamesScores = new HashMap<>();
-    HashMap<String, String> records = new HashMap<>();
-    NBAGameAdapter adapter;
-    String date;
+    private ArrayList<Game> nbaSchedule= new ArrayList<Game>();
+    private HashMap<String, int[]> gamesScores = new HashMap<>();
+    private HashMap<String, String> records = new HashMap<>();
+    private NBAGameAdapter adapter;
+    private String date;
     private boolean scoresGot = false;
 
    @BindView(R.id.list_view)
@@ -146,6 +146,7 @@ public class NBAFragment extends Fragment implements SportFragment{
 
     @Override
     public void onDateChanged() {
+        Log.d(TAG, "onDateCHanged()");
         date  = ((MainActivity)getActivity()).getCurrFullDate();
         new getNBAschedule().execute();
         scoresGot = false;

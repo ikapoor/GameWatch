@@ -33,9 +33,9 @@ import kapoor.ishan.ca.game_watch.R;
 public class MLBFragment extends Fragment implements SportFragment {
 
     public static final String TAG  = MLBFragment.class.getSimpleName();
-    ArrayList<Game> mlbSchedule = new ArrayList<>();
-    MLBGameAdapter adapter;
-    String date;
+    private ArrayList<Game> mlbSchedule = new ArrayList<>();
+    private MLBGameAdapter adapter;
+    private String date;
 
 
     @BindView(R.id.list_view)

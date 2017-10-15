@@ -35,11 +35,11 @@ import kapoor.ishan.ca.game_watch.R;
 public class NFLFragment extends Fragment implements SportFragment {
 
     public static final String TAG = NFLFragment.class.getSimpleName();
-    ArrayList<Game> gameList = new ArrayList<Game>();
-    NFLGameAdapter adapter;
-    String date;
-    HashMap<String, int[]> gamesScores = new HashMap<>();
-    HashMap<String, String> records = new HashMap<>();
+    private ArrayList<Game> gameList = new ArrayList<Game>();
+    private NFLGameAdapter adapter;
+    private String date;
+    private HashMap<String, int[]> gamesScores = new HashMap<>();
+    private HashMap<String, String> records = new HashMap<>();
     private boolean scoresGot = false;
 
     @BindView(R.id.list_view)

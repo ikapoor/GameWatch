@@ -107,6 +107,10 @@ public class JSONParsing {
                 JSONObject team = array.getJSONObject(i).getJSONObject("team");
                 String id = team.getString("ID");
                 JSONObject stats = array.getJSONObject(i).getJSONObject("stats");
+                // weird api thing, NHL games has a stats object in stats object
+                if (stats.has("stats")){
+                    stats = stats.getJSONObject("stats");
+                }
                 String wins = stats.getJSONObject("Wins"). getString("#text");
                 String losses = stats.getJSONObject("Losses"). getString("#text");
                 records.put(id, wins + " - " + losses);

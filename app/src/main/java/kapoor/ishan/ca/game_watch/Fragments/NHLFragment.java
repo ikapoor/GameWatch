@@ -10,13 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kapoor.ishan.ca.game_watch.APIcalls;
+import kapoor.ishan.ca.game_watch.Adapters.GameScoresDialogFragment;
 import kapoor.ishan.ca.game_watch.Adapters.NBAGameAdapter;
 import kapoor.ishan.ca.game_watch.Adapters.NHLGameAdpater;
 import kapoor.ishan.ca.game_watch.Game;
@@ -30,9 +33,12 @@ import kapoor.ishan.ca.game_watch.R;
 
 public class NHLFragment extends Fragment implements SportFragment{
     public static final String TAG = NHLFragment.class.getSimpleName();
-    ArrayList<Game> NHLSchedule= new ArrayList<Game>();
-    String date;
-    NHLGameAdpater adapter;
+    private ArrayList<Game> NHLSchedule= new ArrayList<Game>();
+    private HashMap<String, int[]> gamesScores = new HashMap<>();
+    private HashMap<String, String> records = new HashMap<>();
+    private String date;
+    private NHLGameAdpater adapter;
+    private boolean scoresGot = false;
 
     @BindView(R.id.list_view)
     ListView listView;
@@ -47,7 +53,7 @@ public class NHLFragment extends Fragment implements SportFragment{
         Log.d(TAG, "onCreateView()");
         View view = inflater.inflate(R.layout.nba_fragment, null);
         ButterKnife.bind(this, view);
-        adapter = new NHLGameAdpater(getContext(), R.layout.list_item_game, NHLSchedule);
+        adapter = new NHLGameAdpater(getContext(), R.layout.list_item_game, NHLSchedule, this);
         listView = (ListView)view.findViewById(R.id.list_view);
         listView.setAdapter(adapter);
         date  = ((MainActivity)getActivity()).getCurrFullDate();
@@ -65,8 +71,10 @@ public class NHLFragment extends Fragment implements SportFragment{
 
     @Override
     public void onDateChanged() {
+        Log.d(TAG, "onDatechanged()");
         date  = ((MainActivity)getActivity()).getCurrFullDate();
         new getNHLschedule().execute();
+        scoresGot = false;
 
     }
 
@@ -130,7 +138,48 @@ public class NHLFragment extends Fragment implements SportFragment{
     }
 
     @Override
-    public void onGameClicked(String poition, String id) {
+    public void onGameClicked(String position, String id) {
+
+        if (Integer.valueOf(date) > Integer.valueOf(((MainActivity)getActivity()).getTodaysDate())){
+            Toast.makeText(getContext(), "This Game is yet to happen ", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            if (!scoresGot)
+                new getNHLScores().execute(position, id);
+            else {
+                showGameScores(position, id);
+            }
+        }
+
+    }
+
+    private void showGameScores(String positionCLicked, String idClicked) {
+        int pos = Integer.valueOf(positionCLicked);
+        Game currGame = NHLSchedule.get(pos);
+        Bundle bundle = new Bundle();
+        bundle.putString(GameScoresDialogFragment.SOURCE, GameScoresDialogFragment.SOURCE_NHL);
+        bundle.putString(GameScoresDialogFragment.HOME_TEAM_NAME_KEY, currGame.getHomeTeam().getName());
+        bundle.putString(GameScoresDialogFragment.AWAY_TEAM_NAME_KEY, currGame.getAwayTeam().getName());
+        bundle.getString(GameScoresDialogFragment.HOME_TEAM_CITY_KEY, currGame.getHomeTeam().getCity());
+        bundle.putString(GameScoresDialogFragment.AWAY_TEAM_CITY_KEY, currGame.getAwayTeam().getCity());
+        bundle.putString(GameScoresDialogFragment.HOME_TEAM_ABBREVIATION_KEY, currGame.getHomeTeam().getAbbreviation());
+        bundle.putString(GameScoresDialogFragment.AWAY_TEAM_ABBREVIATION_KEY, currGame.getAwayTeam().getAbbreviation());
+        if (gamesScores.get(idClicked) == null){
+            bundle.putInt(GameScoresDialogFragment.HOME_TEAM_SCORE_KEY, 0);
+            bundle.putInt(GameScoresDialogFragment.AWAY_TEAM_SCORE_KEY, 0);
+        }
+        else {
+            bundle.putInt(GameScoresDialogFragment.HOME_TEAM_SCORE_KEY, gamesScores.get(idClicked)[0]);
+            bundle.putInt(GameScoresDialogFragment.AWAY_TEAM_SCORE_KEY, gamesScores.get(idClicked)[1]);
+        }
+        String currHomeID  = currGame.getHomeTeam().getId();
+        String currAwayId = currGame.getAwayTeam().getId();
+        bundle.putString(GameScoresDialogFragment.HOME_TEAM_RECORD_KEY, records.get(currHomeID));
+        bundle.putString(GameScoresDialogFragment.AWAY_TEAM_RECORD_KEY, records.get(currAwayId));
+        GameScoresDialogFragment gameScoresDialogFragment = new GameScoresDialogFragment();
+        gameScoresDialogFragment.setArguments(bundle);
+        gameScoresDialogFragment.show(getActivity().getFragmentManager(), "tag");
+
 
     }
 
@@ -139,5 +188,38 @@ public class NHLFragment extends Fragment implements SportFragment{
         noGameTextView.bringToFront();
         noGameTextView.setVisibility(View.VISIBLE);
     }
+
+
+    public class getNHLScores extends AsyncTask<String, String, String>{
+
+        public String idClicked;
+        public String positionCLicked;
+        String record;
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String stringFromAPICall = APIcalls.getScore(getSeason(date), date, APIcalls.SPORT_NHL);
+            Log.d(TAG, stringFromAPICall);
+            positionCLicked = strings[0];
+            idClicked = strings[1];
+            record = APIcalls.getRecord(getSeason(date), APIcalls.SPORT_NHL);
+            Log.d(TAG, record);
+            scoresGot = true;
+            return stringFromAPICall;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            HashMap<String, int[]> scores = JSONParsing.parseNBAScore(s);
+            if (scores == null) return;
+            //TODO if its today's date, scores equals null and you have to click twice, fix this
+            gamesScores = JSONParsing.parseNBAScore(s);
+            records = JSONParsing.parseRecord(record);
+            showGameScores(positionCLicked, idClicked);
+
+        }
+
+    }
+
 
 }

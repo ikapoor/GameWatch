@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import kapoor.ishan.ca.game_watch.Fragments.SportFragment;
 import kapoor.ishan.ca.game_watch.Game;
 import kapoor.ishan.ca.game_watch.R;
 
@@ -24,6 +26,8 @@ import kapoor.ishan.ca.game_watch.R;
  */
 
 public class NHLGameAdpater extends ArrayAdapter<Game> {
+
+    public static final String TAG = NHLGameAdpater.class.getSimpleName();
 
     @BindView(R.id.HomeTeam)
     ImageView homeTeam;
@@ -41,12 +45,14 @@ public class NHLGameAdpater extends ArrayAdapter<Game> {
     TextView locationTV;
     private ArrayList<Game> nhlSchedule;
     private Context context;
+    private SportFragment sportFragment;
 
 
-    public NHLGameAdpater(@NonNull Context context, @LayoutRes int resource, ArrayList<Game> list) {
+    public NHLGameAdpater(@NonNull Context context, @LayoutRes int resource, ArrayList<Game> list,SportFragment sportFragment) {
         super(context, resource);
         this.context = context;
         this.nhlSchedule = list;
+        this.sportFragment = sportFragment;
     }
 
     @Override
@@ -56,11 +62,11 @@ public class NHLGameAdpater extends ArrayAdapter<Game> {
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View View, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View View, @NonNull ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View gameView = inflater.inflate(R.layout.list_item_game, parent, false);
         ButterKnife.bind(this, gameView);
-        Game currGame = nhlSchedule.get(position);
+        final Game currGame = nhlSchedule.get(position);
        /* homeTeam.setImageResource(getNBAImageID(currGame.getHomeTeam().getAbbreviation()));
         awayTeam.setImageResource(getNBAImageID(currGame.getAwayTeam().getAbbreviation()));*/
         dateTV.setText(currGame.getDate());
@@ -73,6 +79,15 @@ public class NHLGameAdpater extends ArrayAdapter<Game> {
         LinearLayout linearLayout = (LinearLayout)gameView.findViewById(R.id.linear_layout);
         linearLayout.addView(homeTV);
         linearLayout.addView(awayTV);
+
+        gameView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "gameClicked(), " + currGame.getHomeTeam().getName() + " vs. " + currGame.getAwayTeam().getName());
+                sportFragment.onGameClicked(Integer.toString(position), currGame.getID());
+
+            }
+        });
         return gameView;
     }
 
