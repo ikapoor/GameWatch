@@ -3,6 +3,17 @@ package kapoor.ishan.ca.game_watch.Adapters;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import kapoor.ishan.ca.game_watch.Fragments.NBAFragment;
+import kapoor.ishan.ca.game_watch.R;
 
 /**
  * Created by ishan on 2017-10-14.
@@ -19,10 +30,31 @@ public class GameScoresDialogFragment  extends DialogFragment{
     public static final String AWAY_TEAM_ABBREVIATION_KEY = "awayabb";
 
 
+    @BindView(R.id.HomeTeamLogo)
+    ImageView homeTeamLogo;
 
+    @BindView(R.id.AwayTeamLogo)
+    ImageView awayTeamLogo;
+
+    @BindView(R.id.ScoreTV)
+    TextView scoreTV;
+
+
+
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_dialog_scores_game, container, false);
+        ButterKnife.bind(this, view);
+        Bundle bundle = getArguments();
 
+        homeTeamLogo.setImageResource(NBAGameAdapter.getNBAImageID(bundle.getString(HOME_TEAM_ABBREVIATION_KEY)));
+        awayTeamLogo.setImageResource(NBAGameAdapter.getNBAImageID(bundle.getString(AWAY_TEAM_ABBREVIATION_KEY)));
+        String score = Integer.toString(bundle.getInt(HOME_TEAM_SCORE_KEY)) + " " +
+                        Integer.toString(bundle.getInt(AWAY_TEAM_SCORE_KEY));
+        scoreTV.setText(score);
+
+
+        return view;
+    }
 }

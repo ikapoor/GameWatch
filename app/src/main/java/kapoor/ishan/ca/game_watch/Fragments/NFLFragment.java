@@ -131,10 +131,9 @@ public class NFLFragment extends Fragment implements SportFragment {
     }
 
     @Override
-    public void onGameClicked(String id) {
+    public void onGameClicked(String poition, String id) {
 
     }
-
     public void noGamesOnSelectedDateView(){
         listView.setVisibility(View.GONE);
         noGameTextView.bringToFront();

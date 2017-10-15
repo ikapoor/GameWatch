@@ -126,7 +126,7 @@ public class MLBFragment extends Fragment implements SportFragment {
     }
 
     @Override
-    public void onGameClicked(String id) {
+    public void onGameClicked(String poition, String id) {
 
     }
 

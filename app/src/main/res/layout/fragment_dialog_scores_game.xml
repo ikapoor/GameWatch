@@ -1,0 +1,79 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_centerHorizontal="true"
+    app:layout_anchorGravity="center_horizontal"
+    android:background="#fff"
+    android:layout_gravity="center">
+
+    <LinearLayout
+        android:paddingTop="10dp"
+        android:paddingBottom="50dp"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
+            android:orientation="vertical"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/HomeTeamLogo"
+                android:src="@drawable/tor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_below="@id/HomeTeamLogo"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center_horizontal"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/HomeTeamRecord"
+                android:text="82-0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/ScoreTV"
+            android:textSize="30dp"
+            android:text="100 - 100"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+        <RelativeLayout
+            android:paddingRight="10dp"
+            android:paddingEnd="10dp"
+            android:orientation="vertical"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:minWidth="70dp"
+                android:maxWidth="100dp"
+                android:id="@+id/AwayTeamLogo"
+                android:src="@drawable/tor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_below="@id/AwayTeamLogo"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_horizontal"
+                android:id="@+id/AwayTeamRecord"
+                android:text="82-0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+
+</FrameLayout>
