@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import kapoor.ishan.ca.game_watch.Fragments.SportFragment;
 import kapoor.ishan.ca.game_watch.Game;
 import kapoor.ishan.ca.game_watch.R;
 
@@ -24,6 +26,7 @@ import kapoor.ishan.ca.game_watch.R;
  */
 
 public class MLBGameAdapter extends ArrayAdapter<Game> {
+    public static final String TAG = MLBGameAdapter.class.getSimpleName();
 
     @BindView(R.id.HomeTeam)
     ImageView homeTeam;
@@ -42,12 +45,14 @@ public class MLBGameAdapter extends ArrayAdapter<Game> {
 
     private List<Game> mlbGameList;
     private Context context;
+    private SportFragment sportFragment;
 
 
-    public MLBGameAdapter(@NonNull Context context, @LayoutRes int resource, List<Game> gameList) {
+    public MLBGameAdapter(@NonNull Context context, @LayoutRes int resource, List<Game> gameList, SportFragment sportFragment) {
         super(context, resource);
         this.context = context;
         this.mlbGameList = gameList;
+        this.sportFragment = sportFragment;
     }
 
     @Override
@@ -57,11 +62,11 @@ public class MLBGameAdapter extends ArrayAdapter<Game> {
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View View, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View View, @NonNull ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View gameView = inflater.inflate(R.layout.list_item_game, parent, false);
         ButterKnife.bind(this, gameView);
-        Game currGame = mlbGameList.get(position);
+        final Game currGame = mlbGameList.get(position);
        /* homeTeam.setImageResource(getNBAImageID(currGame.getHomeTeam().getAbbreviation()));
         awayTeam.setImageResource(getNBAImageID(currGame.getAwayTeam().getAbbreviation()));*/
         dateTV.setText(currGame.getDate());
@@ -74,6 +79,13 @@ public class MLBGameAdapter extends ArrayAdapter<Game> {
         LinearLayout linearLayout = (LinearLayout)gameView.findViewById(R.id.linear_layout);
         linearLayout.addView(homeTV);
         linearLayout.addView(awayTV);
+        gameView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "gameClicked(), " + currGame.getHomeTeam().getName() + " vs. " + currGame.getAwayTeam().getName());
+                sportFragment.onGameClicked(Integer.toString(position), currGame.getID());
+            }
+        });
         return gameView;
     }
 
