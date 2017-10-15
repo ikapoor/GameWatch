@@ -91,7 +91,6 @@ public class NBAFragment extends Fragment implements SportFragment{
 
     @Override
     public void setSchedule(List<Game> list) {
-
         if (getActivity()!=null) {
             noGameTextView.setVisibility(View.GONE);
             listView.bringToFront();
@@ -121,6 +120,7 @@ public class NBAFragment extends Fragment implements SportFragment{
         int pos = Integer.valueOf(position);
         Game currGame = nbaSchedule.get(pos);
         Bundle bundle = new Bundle();
+        bundle.putString(GameScoresDialogFragment.SOURCE, GameScoresDialogFragment.SOURCE_NBA);
         bundle.putString(GameScoresDialogFragment.HOME_TEAM_NAME_KEY, currGame.getHomeTeam().getName());
         bundle.putString(GameScoresDialogFragment.AWAY_TEAM_NAME_KEY, currGame.getAwayTeam().getName());
         bundle.getString(GameScoresDialogFragment.HOME_TEAM_CITY_KEY, currGame.getHomeTeam().getCity());

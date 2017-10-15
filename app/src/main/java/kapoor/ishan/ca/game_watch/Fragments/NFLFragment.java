@@ -10,13 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kapoor.ishan.ca.game_watch.APIcalls;
+import kapoor.ishan.ca.game_watch.Adapters.GameScoresDialogFragment;
 import kapoor.ishan.ca.game_watch.Adapters.NBAGameAdapter;
 import kapoor.ishan.ca.game_watch.Adapters.NFLGameAdapter;
 import kapoor.ishan.ca.game_watch.Adapters.NHLGameAdpater;
@@ -35,6 +38,9 @@ public class NFLFragment extends Fragment implements SportFragment {
     ArrayList<Game> gameList = new ArrayList<Game>();
     NFLGameAdapter adapter;
     String date;
+    HashMap<String, int[]> gamesScores = new HashMap<>();
+    HashMap<String, String> records = new HashMap<>();
+    private boolean scoresGot = false;
 
     @BindView(R.id.list_view)
     ListView listView;
@@ -48,7 +54,7 @@ public class NFLFragment extends Fragment implements SportFragment {
         Log.d(TAG, "onCreateView()");
         View view  = inflater.inflate(R.layout.nba_fragment, null);
         ButterKnife.bind(this, view);
-        adapter = new NFLGameAdapter(getContext(), R.layout.list_item_game, gameList);
+        adapter = new NFLGameAdapter(getContext(), R.layout.list_item_game, gameList, this);
         listView = (ListView)view.findViewById(R.id.list_view);
         listView.setAdapter(adapter);
         date  = ((MainActivity)getActivity()).getCurrFullDate();
@@ -73,8 +79,9 @@ public class NFLFragment extends Fragment implements SportFragment {
     @Override
     public void onDateChanged() {
         Log.d(TAG, "onDateChanged()");
-        date = ((MainActivity)getActivity()).getCurrFullDate();
+        date  = ((MainActivity)getActivity()).getCurrFullDate();
         new getNFLschedule().execute();
+        scoresGot = false;
 
     }
 
@@ -113,6 +120,52 @@ public class NFLFragment extends Fragment implements SportFragment {
         }
     }
 
+    @Override
+    public void onGameClicked(String position, String id) {
+
+        if (Integer.valueOf(date) > Integer.valueOf(((MainActivity)getActivity()).getTodaysDate())){
+            Toast.makeText(getContext(), "This Game is yet to happen ", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            if (!scoresGot)
+                new getNFLScore().execute(position, id);
+            else {
+                showGameScores(position, id);
+            }
+        }
+
+
+    }
+    public void noGamesOnSelectedDateView(){
+        listView.setVisibility(View.GONE);
+        noGameTextView.bringToFront();
+        noGameTextView.setVisibility(View.VISIBLE);
+    }
+    private void showGameScores(String positionCLicked, String idClicked) {
+        int pos = Integer.valueOf(positionCLicked);
+        Game currGame = gameList.get(pos);
+        Bundle bundle = new Bundle();
+        bundle.putString(GameScoresDialogFragment.SOURCE, GameScoresDialogFragment.SOURCE_NFL);
+        bundle.putString(GameScoresDialogFragment.HOME_TEAM_NAME_KEY, currGame.getHomeTeam().getName());
+        bundle.putString(GameScoresDialogFragment.AWAY_TEAM_NAME_KEY, currGame.getAwayTeam().getName());
+        bundle.getString(GameScoresDialogFragment.HOME_TEAM_CITY_KEY, currGame.getHomeTeam().getCity());
+        bundle.putString(GameScoresDialogFragment.AWAY_TEAM_CITY_KEY, currGame.getAwayTeam().getCity());
+        bundle.putString(GameScoresDialogFragment.HOME_TEAM_ABBREVIATION_KEY, currGame.getHomeTeam().getAbbreviation());
+        bundle.putString(GameScoresDialogFragment.AWAY_TEAM_ABBREVIATION_KEY, currGame.getAwayTeam().getAbbreviation());
+        bundle.putInt(GameScoresDialogFragment.HOME_TEAM_SCORE_KEY, gamesScores.get(idClicked)[0]);
+        bundle.putInt(GameScoresDialogFragment.AWAY_TEAM_SCORE_KEY, gamesScores.get(idClicked)[1]);
+        String currHomeID  = currGame.getHomeTeam().getId();
+        String currAwayId = currGame.getAwayTeam().getId();
+        bundle.putString(GameScoresDialogFragment.HOME_TEAM_RECORD_KEY, records.get(currHomeID));
+        bundle.putString(GameScoresDialogFragment.AWAY_TEAM_RECORD_KEY, records.get(currAwayId));
+        GameScoresDialogFragment gameScoresDialogFragment = new GameScoresDialogFragment();
+        gameScoresDialogFragment.setArguments(bundle);
+        gameScoresDialogFragment.show(getActivity().getFragmentManager(), "tag");
+
+
+    }
+
+
     public class getNFLschedule extends AsyncTask<String, String, String> {
 
         @Override
@@ -130,13 +183,33 @@ public class NFLFragment extends Fragment implements SportFragment {
         }
     }
 
-    @Override
-    public void onGameClicked(String poition, String id) {
+    public class getNFLScore extends AsyncTask<String, String, String>{
+        public String idClicked;
+        public String positionCLicked;
+        String record;
 
+        @Override
+        protected String doInBackground(String... strings) {
+            String stringFromAPICall = APIcalls.getScore(getSeason(date), date, APIcalls.SPORT_NFL);
+            Log.d(TAG, stringFromAPICall);
+            positionCLicked = strings[0];
+            idClicked = strings[1];
+            record = APIcalls.getRecord(getSeason(date), APIcalls.SPORT_NFL);
+            Log.d(TAG, record);
+            scoresGot = true;
+            return stringFromAPICall;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            HashMap<String, int[]> scores = JSONParsing.parseNBAScore(s);
+            if (scores == null) return;
+            gamesScores = JSONParsing.parseNBAScore(s);
+            records = JSONParsing.parseRecord(record);
+            showGameScores(positionCLicked, idClicked);
+        }
     }
-    public void noGamesOnSelectedDateView(){
-        listView.setVisibility(View.GONE);
-        noGameTextView.bringToFront();
-        noGameTextView.setVisibility(View.VISIBLE);
-    }
+
+
+
 }

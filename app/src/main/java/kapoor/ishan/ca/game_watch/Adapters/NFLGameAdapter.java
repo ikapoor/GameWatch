@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import kapoor.ishan.ca.game_watch.Fragments.SportFragment;
 import kapoor.ishan.ca.game_watch.Game;
 import kapoor.ishan.ca.game_watch.R;
 
@@ -42,11 +43,13 @@ public class NFLGameAdapter extends ArrayAdapter<Game> {
 
     private ArrayList<Game> nflGames;
     private Context con;
+    private SportFragment sportFragment;
 
-    public NFLGameAdapter(@NonNull Context context, int resource, ArrayList<Game> games) {
+    public NFLGameAdapter(@NonNull Context context, int resource, ArrayList<Game> games,  SportFragment sportFragment) {
         super(context, resource);
         this.con = context;
         this.nflGames = games;
+        this.sportFragment = sportFragment;
     }
 
     @Override
@@ -57,11 +60,11 @@ public class NFLGameAdapter extends ArrayAdapter<Game> {
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View View, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View View, @NonNull ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) con.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View gameView = inflater.inflate(R.layout.list_item_game, parent, false);
         ButterKnife.bind(this, gameView);
-        Game currGame = nflGames.get(position);
+        final Game currGame = nflGames.get(position);
        /* homeTeam.setImageResource(getNBAImageID(currGame.getHomeTeam().getAbbreviation()));
         awayTeam.setImageResource(getNBAImageID(currGame.getAwayTeam().getAbbreviation()));*/
         dateTV.setText(currGame.getDate());
@@ -74,6 +77,13 @@ public class NFLGameAdapter extends ArrayAdapter<Game> {
         LinearLayout linearLayout = (LinearLayout)gameView.findViewById(R.id.linear_layout);
         linearLayout.addView(homeTV);
         linearLayout.addView(awayTV);
+
+        gameView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sportFragment.onGameClicked(Integer.toString(position), currGame.getID());
+            }
+        });
         return gameView;
     }
 }
