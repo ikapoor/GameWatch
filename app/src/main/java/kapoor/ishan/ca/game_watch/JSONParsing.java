@@ -97,4 +97,26 @@ public class JSONParsing {
     }
 
 
+    public static HashMap<String, String>parseRecord(String rawJSON){
+        HashMap<String, String> records = new HashMap<>();
+        try {
+            JSONObject jsonObject = new JSONObject(rawJSON);
+            JSONObject overallTeamStanding = jsonObject.getJSONObject("overallteamstandings");
+            JSONArray array = overallTeamStanding.getJSONArray("teamstandingsentry");
+            for(int i = 0; i<array.length(); i++){
+                JSONObject team = array.getJSONObject(i).getJSONObject("team");
+                String id = team.getString("ID");
+                JSONObject stats = array.getJSONObject(i).getJSONObject("stats");
+                String wins = stats.getJSONObject("Wins"). getString("#text");
+                String losses = stats.getJSONObject("Losses"). getString("#text");
+                records.put(id, wins + " - " + losses);
+            }
+            return records;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 }

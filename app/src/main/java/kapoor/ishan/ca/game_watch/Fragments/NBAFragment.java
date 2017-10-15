@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,9 +34,9 @@ import kapoor.ishan.ca.game_watch.R;
 public class NBAFragment extends Fragment implements SportFragment{
 
     public static final String TAG = NBAFragment.class.getSimpleName();
-    private static final String SCORES_ALREADY_GOT = "gotScore";
     ArrayList<Game> nbaSchedule= new ArrayList<Game>();
     HashMap<String, int[]> gamesScores = new HashMap<>();
+    HashMap<String, String> records = new HashMap<>();
     NBAGameAdapter adapter;
     String date;
     private boolean scoresGot = false;
@@ -103,16 +104,21 @@ public class NBAFragment extends Fragment implements SportFragment{
 
     @Override
     public void onGameClicked(String position, String id) {
-        if(!scoresGot)
-            new getNBAScores().execute(position, id);
-        else {
-            showGameScores(position, id);
+
+        if (Integer.valueOf(date) > Integer.valueOf(((MainActivity)getActivity()).getTodaysDate())){
+            Toast.makeText(getContext(), "This Game is yet to happen ", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            if (!scoresGot)
+                new getNBAScores().execute(position, id);
+            else {
+                showGameScores(position, id);
+            }
         }
     }
 
     private void showGameScores(String position, String id) {
         int pos = Integer.valueOf(position);
-        int[] currGameScores = gamesScores.get(id);
         Game currGame = nbaSchedule.get(pos);
         Bundle bundle = new Bundle();
         bundle.putString(GameScoresDialogFragment.HOME_TEAM_NAME_KEY, currGame.getHomeTeam().getName());
@@ -123,6 +129,10 @@ public class NBAFragment extends Fragment implements SportFragment{
         bundle.putString(GameScoresDialogFragment.AWAY_TEAM_ABBREVIATION_KEY, currGame.getAwayTeam().getAbbreviation());
         bundle.putInt(GameScoresDialogFragment.HOME_TEAM_SCORE_KEY, gamesScores.get(id)[0]);
         bundle.putInt(GameScoresDialogFragment.AWAY_TEAM_SCORE_KEY, gamesScores.get(id)[1]);
+        String currHomeID  = currGame.getHomeTeam().getId();
+        String currAwayId = currGame.getAwayTeam().getId();
+        bundle.putString(GameScoresDialogFragment.HOME_TEAM_RECORD_KEY, records.get(currHomeID));
+        bundle.putString(GameScoresDialogFragment.AWAY_TEAM_RECORD_KEY, records.get(currAwayId));
         GameScoresDialogFragment gameScoresDialogFragment = new GameScoresDialogFragment();
         gameScoresDialogFragment.setArguments(bundle);
         gameScoresDialogFragment.show(getActivity().getFragmentManager(), "tag");
@@ -132,6 +142,7 @@ public class NBAFragment extends Fragment implements SportFragment{
     public void onDateChanged() {
         date  = ((MainActivity)getActivity()).getCurrFullDate();
         new getNBAschedule().execute();
+        scoresGot = false;
     }
 
     public void noGamesOnSelectedDateView(){
@@ -165,6 +176,7 @@ public class NBAFragment extends Fragment implements SportFragment{
 
         public String idClicked;
         public String positionCLicked;
+        String record;
 
         @Override
         protected String doInBackground(String... strings) {
@@ -172,6 +184,8 @@ public class NBAFragment extends Fragment implements SportFragment{
             Log.d(TAG, stringFromAPICall);
             positionCLicked = strings[0];
             idClicked = strings[1];
+            record = APIcalls.getRecord(getSeason(date), APIcalls.SPORT_NBA);
+            Log.d(TAG, record);
             scoresGot = true;
             return stringFromAPICall;
         }
@@ -181,6 +195,7 @@ public class NBAFragment extends Fragment implements SportFragment{
             HashMap<String, int[]> scores = JSONParsing.parseNBAScore(s);
             if (scores == null) return;
             gamesScores = JSONParsing.parseNBAScore(s);
+            records = JSONParsing.parseRecord(record);
             showGameScores(positionCLicked, idClicked);
 
         }

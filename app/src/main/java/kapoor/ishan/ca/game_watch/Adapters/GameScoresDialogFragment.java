@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kapoor.ishan.ca.game_watch.Fragments.NBAFragment;
@@ -28,6 +30,8 @@ public class GameScoresDialogFragment  extends DialogFragment{
     public static final String AWAY_TEAM_CITY_KEY = "awaycity";
     public static final String HOME_TEAM_ABBREVIATION_KEY = "homeabb";
     public static final String AWAY_TEAM_ABBREVIATION_KEY = "awayabb";
+    public static final String HOME_TEAM_RECORD_KEY = "homeRecord";
+    public static final String AWAY_TEAM_RECORD_KEY = "awayRecord";
 
 
     @BindView(R.id.HomeTeamLogo)
@@ -38,6 +42,12 @@ public class GameScoresDialogFragment  extends DialogFragment{
 
     @BindView(R.id.ScoreTV)
     TextView scoreTV;
+
+    @BindView(R.id.HomeTeamRecord)
+    TextView homeTeamRecord;
+
+    @BindView(R.id.AwayTeamRecord)
+    TextView awayTeamRecord;
 
 
 
@@ -53,8 +63,8 @@ public class GameScoresDialogFragment  extends DialogFragment{
         String score = Integer.toString(bundle.getInt(HOME_TEAM_SCORE_KEY)) + " " +
                         Integer.toString(bundle.getInt(AWAY_TEAM_SCORE_KEY));
         scoreTV.setText(score);
-
-
+        homeTeamRecord.setText(bundle.getString(HOME_TEAM_RECORD_KEY));
+        awayTeamRecord.setText(bundle.getString(AWAY_TEAM_RECORD_KEY));
         return view;
     }
 }

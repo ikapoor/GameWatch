@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private String currFullDate;
     DatePickerDialog datePickerDialog;
 
+    private String todaysDate;
+
     public String getCurrFullDate(){
         return this.currFullDate;
     }
@@ -56,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         year = calendar.get(calendar.YEAR);
         month = calendar.get(calendar.MONTH);
         date = calendar.get(calendar.DAY_OF_MONTH);
-
+        todaysDate = Utils.parseDate(year, month, date);
         currFullDate = Utils.parseDate(year, month, date);
         currFullDate = "20161225";
 
@@ -88,6 +90,10 @@ public class MainActivity extends AppCompatActivity {
             }, year, month, date);
         }
         datePickerDialog.show();
+    }
+
+    public String getTodaysDate() {
+        return todaysDate;
     }
 
 }

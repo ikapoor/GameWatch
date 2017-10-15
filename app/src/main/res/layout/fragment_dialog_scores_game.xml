@@ -25,8 +25,8 @@
             <ImageView
                 android:id="@+id/HomeTeamLogo"
                 android:src="@drawable/tor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
 
             <TextView
                 android:layout_below="@id/HomeTeamLogo"
@@ -55,12 +55,10 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:minWidth="70dp"
-                android:maxWidth="100dp"
                 android:id="@+id/AwayTeamLogo"
-                android:src="@drawable/tor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:src="@drawable/gsw"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
 
             <TextView
                 android:layout_below="@id/AwayTeamLogo"

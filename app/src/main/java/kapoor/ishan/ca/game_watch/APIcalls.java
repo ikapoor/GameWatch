@@ -81,9 +81,9 @@ public class APIcalls {
 
 
 
-    public static String getRecord(String SeasonType){
+    public static String getRecord(String SeasonType, String sport){
         try {
-            URL url = new URL (BASE_URL + SeasonType +ARGUEMENT_RECORD);
+            URL url = new URL (BASE_URL + sport +  SeasonType +ARGUEMENT_RECORD);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
@@ -101,7 +101,6 @@ public class APIcalls {
             Log.d(TAG, stringBuffer.toString());
             return stringBuffer.toString();
         } catch (Exception e) {
-            Log.d(TAG, "exceptionIsBeingCaught");
             Log.d(TAG, e.toString());
             return e.toString();
         }
