@@ -152,8 +152,14 @@ public class NFLFragment extends Fragment implements SportFragment {
         bundle.putString(GameScoresDialogFragment.AWAY_TEAM_CITY_KEY, currGame.getAwayTeam().getCity());
         bundle.putString(GameScoresDialogFragment.HOME_TEAM_ABBREVIATION_KEY, currGame.getHomeTeam().getAbbreviation());
         bundle.putString(GameScoresDialogFragment.AWAY_TEAM_ABBREVIATION_KEY, currGame.getAwayTeam().getAbbreviation());
-        bundle.putInt(GameScoresDialogFragment.HOME_TEAM_SCORE_KEY, gamesScores.get(idClicked)[0]);
-        bundle.putInt(GameScoresDialogFragment.AWAY_TEAM_SCORE_KEY, gamesScores.get(idClicked)[1]);
+        if (gamesScores.get(idClicked) == null){
+            bundle.putInt(GameScoresDialogFragment.HOME_TEAM_SCORE_KEY, 0);
+            bundle.putInt(GameScoresDialogFragment.AWAY_TEAM_SCORE_KEY, 0);
+        }
+        else {
+            bundle.putInt(GameScoresDialogFragment.HOME_TEAM_SCORE_KEY, gamesScores.get(idClicked)[0]);
+            bundle.putInt(GameScoresDialogFragment.AWAY_TEAM_SCORE_KEY, gamesScores.get(idClicked)[1]);
+        }
         String currHomeID  = currGame.getHomeTeam().getId();
         String currAwayId = currGame.getAwayTeam().getId();
         bundle.putString(GameScoresDialogFragment.HOME_TEAM_RECORD_KEY, records.get(currHomeID));

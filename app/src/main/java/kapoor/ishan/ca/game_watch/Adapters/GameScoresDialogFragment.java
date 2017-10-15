@@ -68,12 +68,13 @@ public class GameScoresDialogFragment  extends DialogFragment{
             homeTeamLogo.setImageResource(NBAGameAdapter.getNBAImageID(bundle.getString(HOME_TEAM_ABBREVIATION_KEY)));
             awayTeamLogo.setImageResource(NBAGameAdapter.getNBAImageID(bundle.getString(AWAY_TEAM_ABBREVIATION_KEY)));
         }
-
-        String score = Integer.toString(bundle.getInt(HOME_TEAM_SCORE_KEY)) + " " +
+        String score = Integer.toString(bundle.getInt(HOME_TEAM_SCORE_KEY)) + " - " +
                         Integer.toString(bundle.getInt(AWAY_TEAM_SCORE_KEY));
         scoreTV.setText(score);
+        getDialog().setTitle(bundle.getString(HOME_TEAM_NAME_KEY) + " Vs. " + bundle.getString(AWAY_TEAM_NAME_KEY));
         homeTeamRecord.setText(bundle.getString(HOME_TEAM_RECORD_KEY));
         awayTeamRecord.setText(bundle.getString(AWAY_TEAM_RECORD_KEY));
         return view;
     }
+
 }
